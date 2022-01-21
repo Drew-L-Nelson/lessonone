@@ -1,25 +1,37 @@
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
 import './App.css';
+import { connect } from 'react-redux'; 
+import { getCharacters } from './state/actions';
 
-function App() {
+
+function App(props) {
+  useEffect(() => {
+    props.getCharacters();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Rick and Morty!</h1>
+      {props.characters.map(character => {
+        return (
+          <div>
+            <h3>{character.name}</h3>
+            <div>
+              <img src={character.image} alt={character.name} key={character.id}/>
+            </div>
+          </div>
+        )
+      })}
+      {props.error && (<h1>{props.error}</h1>)}
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    characters: state.results,
+    error: state.error
+  };
+}
+
+export default connect(mapStateToProps, { getCharacters })(App);
